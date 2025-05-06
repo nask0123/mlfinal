@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Multi-label Toxic Comment Detector</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      padding: 40px;
+      max-width: 700px;
+      margin: auto;
+      color: #333;
+    }
+
+    h1 {
+      color: #1a1a1a;
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      resize: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2f80ed;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1c60c0;
+    }
+
+    .result {
+      margin-top: 25px;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .label {
+      display: inline-block;
+      padding: 8px 14px;
+      margin: 5px 8px 5px 0;
+      font-size: 15px;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .on {
+      background-color: #27ae60;
+      color: #fff;
+    }
+
+    .off {
+      background-color: #e0e0e0;
+      color: #888;
+    }
+  </style>
+</head>
+<body style="background-color: rgb(176, 227, 134);">
+
+  <h1>🧠 Multi-label Toxic Comment Classifier</h1>
+
+  <textarea id="comment" placeholder="Type your comment here..."></textarea><br>
+  <button onclick="predict()">🔍 Predict</button>
+
+  <div class="result" id="result" style="display:none;"></div>
+
+  <script>
+    async function predict() {
+      const comment = document.getElementById("comment").value;
+      const resultDiv = document.getElementById("result");
+
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: comment })
+      });
+
+      const data = await response.json();
+      resultDiv.innerHTML = "<h3>Predicted Labels:</h3>";
+
+      for (const [label, value] of Object.entries(data)) {
+        const cssClass = value === 1 ? "on" : "off";
+        resultDiv.innerHTML += `<span class="label ${cssClass}">${label}</span>`;
+      }
+
+      resultDiv.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
