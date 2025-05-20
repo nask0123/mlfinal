@@ -14,3 +14,5 @@
 
 │   └── api_multilabel.py
 └── requirements.txt
+
+first of all you run train_multilabel.py and then by fastapi run api_multilabel.py
